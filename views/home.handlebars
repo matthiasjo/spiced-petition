@@ -1,0 +1,23 @@
+
+<h2>Save the Bees!<h2>
+
+<div class="textbox">
+    <img src="/bee.jpg" alt="bee">
+    <p>Please join the good cause to save the bees</p>
+</div>
+
+{{#if error}}
+<p id="wrongInput">{{error}}</p>
+{{/if}}
+
+<form class="" action="/petition" method="post">
+<input type="text" name="firstName" value="" placeholder="First Name">First Name</input>
+<input type="text" name="lastName" value="" placeholder="Last Name">Last Name</input>
+<canvas id="canSign">Signature</canvas>
+<input id="signatureField" type="hidden" name="signature" value=""></input>
+<button type="submit" name="button">Submit</button>
+</form>
+
+<script type="text/javascript" src="/signatureField.js">
+
+</script>
