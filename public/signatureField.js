@@ -1,5 +1,11 @@
 (function() {
     $(document).ready(function() {
+        function isCanvasBlank() {
+            return !canvas
+                .getContext("2d")
+                .getImageData(0, 0, canvas.width, canvas.height)
+                .data.some(channel => channel !== 0);
+        }
         var click = false;
         var xCoord = 0;
         var yCoord = 0;
@@ -31,7 +37,9 @@
 
         $("#canSign").mouseup(function() {
             click = false;
-            $("#signatureField").val(canvas.toDataURL());
+            if (!isCanvasBlank(canvas)) {
+                $("#signatureField").val(canvas.toDataURL());
+            }
         });
     });
 })();
