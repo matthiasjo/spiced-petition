@@ -3,6 +3,6 @@ DROP TABLE IF EXISTS signatures;
 
 CREATE TABLE signatures(
     id SERIAL PRIMARY KEY,
-    userid INT NOT NULL,
+    user_id INTEGER NOT NULL REFERENCES users(id) UNIQUE,
     signature TEXT NOT NULL
 );

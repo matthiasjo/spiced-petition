@@ -6,7 +6,11 @@
 <p>placeholder for some image</p>
 
 <ul>
-    {{#names}}
-    <li>{{name}} {{surname}}</li>
-    {{/names}}
+    {{#Data}}
+     {{#if url}}
+    <li><a href="{{url}}">{{name}} {{surname}}</a> {{age}} <a href="/petition/signers/{{city}}">{{city}}</a></li>
+    {{else}}
+    <li>{{name}} {{surname}} {{age}} <a href="/petition/signers/{{city}}">{{city}}</a></li>
+    {{/if}}
+    {{/Data}}
 </ul>
