@@ -121,7 +121,7 @@ module.exports.upsertUserProfile = function upsertUserProfile(
 };
 
 module.exports.deleteSignature = function deleteSignature(sign_id) {
-    return db.query(`DELETE FROM signatures WHERE user_id=$1`, [sign_id]);
+    return db.query(`DELETE FROM signatures WHERE id=$1`, [sign_id]);
 };
 
 module.exports.deleteAccount = function deleteAccount(user_id) {

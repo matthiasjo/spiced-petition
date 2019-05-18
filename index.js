@@ -5,22 +5,23 @@ const bc = require("./utils/bc");
 const hb = require("express-handlebars");
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
+const csurf = require("csurf");
+const helmet = require("helmet");
 
 // (optional) partials for nav handlebars
 // TODO error handling.
 // TODO code cleaning.
-// TODO security stuff
+// TODO security stuff added csurf and helmet. maybe more security?
 // TODO getCount
 // redirect from petition to list if signed
 // TODO CSS + TEXT
 
 const app = express();
+app.use(helmet());
 const port = 8080;
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 app.use(
     cookieSession({
         name: "session",
@@ -29,6 +30,15 @@ app.use(
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     })
 );
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app.use(csurf());
+app.use(function(req, res, next) {
+    res.locals.csrfToken = req.csrfToken();
+    next();
+});
 
 app.get("/registration", (req, res) => {
     res.render("registration", {
@@ -68,17 +78,22 @@ app.get("/profile", (req, res) => {
     });
 });
 app.post("/profile", (req, res) => {
-    db.createProfile(
-        req.body.city,
-        req.body.age,
-        req.body.personalHomepage,
-        req.session.userID
-    )
-        .then(session => {
-            console.log(session);
-            res.redirect("/petition");
-        })
-        .catch(err => console.log(err));
+    const { city, age, personalHomepage } = req.body;
+    if (!city && !age && !personalHomepage) {
+        res.redirect("/petition");
+    } else {
+        db.createProfile(
+            req.body.city,
+            req.body.age,
+            req.body.personalHomepage,
+            req.session.userID
+        )
+            .then(session => {
+                console.log(session);
+                res.redirect("/petition");
+            })
+            .catch(err => console.log(err));
+    }
 });
 
 app.get("/petition", (req, res) => {
