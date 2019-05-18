@@ -6,4 +6,4 @@ CREATE TABLE user_profiles(
     age INT,
     url VARCHAR,
     user_id INTEGER NOT NULL REFERENCES users(id) UNIQUE
-)
+);

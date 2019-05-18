@@ -1,6 +1,9 @@
-var spicedPg = require("spiced-pg");
+const spicedPg = require("spiced-pg");
 
-var db = spicedPg("postgres:postgres:postgres@localhost:5432/salt-petition");
+const dbUrl =
+    process.env.DATABASE_URL ||
+    "postgres:postgres:postgres@localhost:5432/salt-petition";
+const db = spicedPg(dbUrl);
 
 module.exports.addUser = function addUser(
     nameReg,
@@ -15,7 +18,7 @@ module.exports.addUser = function addUser(
     ) {
         return db.query(
             `INSERT INTO users (name, surname, email, password) VALUES ($1 , $2, $3, $4)
-        RETURNING id, name, surname`,
+        RETURNING id, name, surname, email`,
             [nameReg, surnameReg, emailReg, pwHash]
         );
     } else {
@@ -47,8 +50,8 @@ module.exports.addSignature = function addSignature(signatureForm, userId) {
     }
 };
 
-module.exports.getSignature = function getSignature(cookieId) {
-    return db.query(`SELECT signature FROM signatures WHERE id=$1`, [cookieId]);
+module.exports.getSignature = function getSignature(signId) {
+    return db.query(`SELECT signature FROM signatures WHERE id=$1`, [signId]);
 };
 
 module.exports.getCount = function getCount() {
@@ -56,31 +59,67 @@ module.exports.getCount = function getCount() {
 };
 
 module.exports.getList = function getList() {
-    return db.query(`SELECT name, surname, city, age, url FROM users
-    LEFT OUTER JOIN user_profiles
-    ON users.id = user_profiles.user_id`);
+    return db.query(`SELECT name, surname, city, age, url
+    FROM signatures
+    LEFT OUTER JOIN user_profiles ON signatures.user_id = user_profiles.user_id
+    LEFT OUTER JOIN users ON signatures.user_id = users.id`);
 };
 
 module.exports.getCityList = function getCityList(city) {
     return db.query(
-        `SELECT name, surname, city, age, url FROM users
-    LEFT OUTER JOIN user_profiles
-    ON users.id = user_profiles.user_id WHERE LOWER(city) = LOWER($1)`,
+        `SELECT name, surname, city, age, url
+        FROM signatures
+        LEFT OUTER JOIN user_profiles ON signatures.user_id = user_profiles.user_id
+        LEFT OUTER JOIN users ON signatures.user_id = users.id
+        WHERE LOWER(city) = LOWER($1)`,
         [city]
     );
 };
 
-// module.exports.loginUser = function loginUser(email) {
-//     return db.query(`SELECT email, password,  FROM users WHERE email=$1`, [
-//         email
-//     ]);
-// };
-
-module.exports.loginUser = function loginUser(email) {
+//login & edit profile
+module.exports.selectUser = function selectUser(email) {
     return db.query(
-        `SELECT email, password, users.id AS user_id, signatures.id AS sign_id FROM users
-    LEFT OUTER JOIN signatures
-    ON users.id = signatures.user_id WHERE email=$1`,
+        `SELECT email, password, city, age, url, name, surname, signatures.signature, users.id AS user_id, signatures.id AS sign_id
+        FROM users
+        LEFT OUTER JOIN signatures ON users.id = signatures.user_id
+        LEFT OUTER JOIN user_profiles ON users.id = user_profiles.user_id
+        WHERE email=$1`,
         [email]
     );
+};
+
+module.exports.updateUser = function updateUser(
+    name,
+    surname,
+    email,
+    hashPw,
+    id
+) {
+    if (hashPw) {
+        return db.query(
+            `UPDATE users SET name = $1, surname = $2, email = $3, password = $4 WHERE id = $5;`,
+            [name, surname, email, hashPw, id]
+        );
+    } else if (!hashPw) {
+        return db.query(
+            `UPDATE users SET name = $1, surname = $2, email = $3 WHERE id = $4;`,
+            [name, surname, email, id]
+        );
+    }
+};
+
+module.exports.upsertUserProfile = function upsertUserProfile(
+    city,
+    age,
+    url,
+    user_id
+) {
+    return db.query(
+        `INSERT INTO user_profiles (city, age, url, user_id) VALUES($1, $2, $3, $4) ON CONFLICT (user_id) DO UPDATE SET city=$1, age=$2, url=$3`,
+        [city, age, url, user_id]
+    );
+};
+
+module.exports.deleteSignature = function deleteSignature(user_id) {
+    return db.query(`DELETE FROM signatures WHERE user_id=$1`, [user_id]);
 };

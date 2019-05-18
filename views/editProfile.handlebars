@@ -1,0 +1,35 @@
+
+<p>Edit your profile page</p>
+
+{{#if error}}
+<p class="error">{{error}}</p>
+{{/if}}
+
+{{#if message}}
+<p class="message">{{message}}</p>
+{{/if}}
+
+<form class="" action="/edit-profile" method="post">
+    {{#Data}}
+    <input type="text" name="firstName" value="{{name}}">
+    <input type="text" name="lastName" value="{{surname}}">
+    <input type="email" name="email" value="{{email}}">
+    <input type="password" name="password" value="">
+    <input type="number" name="age" value="{{age}}">
+    <input type="text" name="city" value="{{city}}">
+    <input type="url" name="url" value="{{url}}">
+    <button type="submit" name="button">Update Profile</button>
+    {{/Data}}
+</form>
+
+{{#if signature}}
+<img src="{{signature}}" alt="signature">
+<form class="" action="/deleteSignature" method="post">
+    <button type="submit" name="button">Delete Signature</button>
+</form>
+{{/if}}
+
+
+<form class="" action="/deleteAccount" method="post">
+    <button type="submit" name="button">DELETE ACCOUNT</button>
+</form>

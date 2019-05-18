@@ -7,6 +7,12 @@ const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 
 // (optional) partials for nav handlebars
+// TODO error handling.
+// TODO code cleaning.
+// TODO security stuff
+// TODO getCount
+// redirect from petition to list if signed
+// TODO CSS + TEXT
 
 const app = express();
 const port = 8080;
@@ -40,10 +46,11 @@ app.post("/registration", (req, res) => {
                 req.body.email,
                 pwHash
             )
-                .then(session => {
-                    req.session.userID = session.rows[0].id;
-                    req.session.firstName = session.rows[0].name;
-                    req.session.lastName = session.rows[0].surname;
+                .then(qResponse => {
+                    req.session.userID = qResponse.rows[0].id;
+                    req.session.firstName = qResponse.rows[0].name;
+                    req.session.lastName = qResponse.rows[0].surname;
+                    req.session.email = qResponse.rows[0].email;
                     res.redirect("/profile");
                 })
                 .catch(err => console.log(err));
@@ -121,7 +128,6 @@ app.get("/petition/signed", (req, res) => {
 app.get("/petition/signers", (req, res) => {
     db.getList()
         .then(qResponse => {
-            console.log(qResponse);
             res.render("signers", {
                 layout: "main",
                 siteName: "List of worker Bees",
@@ -130,13 +136,6 @@ app.get("/petition/signers", (req, res) => {
             });
         })
         .catch(err => console.log(err));
-});
-
-app.get("/login", (req, res) => {
-    res.render("login", {
-        layout: "main",
-        siteName: "Petition login"
-    });
 });
 
 app.get("/petition/signers/:city", (req, res) => {
@@ -152,18 +151,106 @@ app.get("/petition/signers/:city", (req, res) => {
         .catch(err => console.log(err));
 });
 
+app.get("/login", (req, res) => {
+    res.render("login", {
+        layout: "main",
+        siteName: "Petition login"
+    });
+});
+
 app.post("/login", (req, res) => {
-    db.loginUser(req.body.email)
-        .then(userInfo => {
-            const pwHash = userInfo.rows[0].password;
+    db.selectUser(req.body.email)
+        .then(qResponse => {
+            const pwHash = qResponse.rows[0].password;
             bc.checkPassword(req.body.password, pwHash)
-                .then(result => {
-                    req.session.userID = userInfo.rows[0].user_id;
-                    req.session.signID = userInfo.rows[0].sign_id;
-                    console.log(result);
-                    res.redirect("/petition/signers");
+                .then(pwMatch => {
+                    if (pwMatch == true) {
+                        req.session.userID = qResponse.rows[0].user_id;
+                        req.session.signID = qResponse.rows[0].sign_id;
+                        req.session.email = qResponse.rows[0].email;
+                        res.redirect("/petition/signers");
+                    } else {
+                        throw new Error("wrong password");
+                    }
                 })
-                .catch(err => console.log(err));
+                .catch(err => {
+                    res.render("login", {
+                        layout: "main",
+                        siteName: "Login to Bee Petition",
+                        error: err.message
+                    });
+                });
+        })
+        .catch(err => console.log(err));
+});
+
+app.get("/edit-profile", (req, res) => {
+    db.selectUser(req.session.email)
+        .then(qResponse => {
+            res.render("editProfile", {
+                layout: "main",
+                siteName: "editProfile",
+                Data: qResponse.rows,
+                signature: qResponse.rows[0].signature
+            });
+        })
+        .catch(err => console.log(err));
+});
+
+app.post("/edit-profile", (req, res) => {
+    const { firstName, lastName, email, password, age, city, url } = req.body;
+    const editProfile = async () => {
+        try {
+            const hashPW = await bc.hashPassword(req.body.password);
+            const userUpdate = await db.updateUser(
+                firstName,
+                lastName,
+                email,
+                hashPW,
+                req.session.userID
+            );
+            const upsertProfile = await db.upsertUserProfile(
+                city,
+                age,
+                url,
+                req.session.userID
+            );
+        } catch {
+            const userUpdate = await db.updateUser(
+                firstName,
+                lastName,
+                email,
+                //password
+                req.session.userID
+            );
+            const upsertProfile = await db.upsertUserProfile(
+                city,
+                age,
+                url,
+                req.session.userID
+            );
+        }
+    };
+    editProfile().then(result => {
+        db.selectUser(req.session.email)
+            .then(qResponse => {
+                res.render("editProfile", {
+                    layout: "main",
+                    siteName: "editProfile",
+                    message: "Profile update complete!",
+                    Data: qResponse.rows,
+                    signature: qResponse.rows[0].signature
+                });
+            })
+            .catch(err => console.log(err));
+    });
+});
+
+app.post("/deleteSignature", (req, res) => {
+    db.deleteSignature(req.session.userID)
+        .then(qResponse => {
+            delete req.session.signID;
+            res.redirect("/petition");
         })
         .catch(err => console.log(err));
 });
@@ -175,4 +262,6 @@ app.post("/logout", (req, res) => {
 
 app.use(serveStatic("./public"));
 
-app.listen(port, () => console.log(`This server is listening on port ${port}`));
+app.listen(process.env.PORT || port, () =>
+    console.log(`This server is listening on port ${port}`)
+);
