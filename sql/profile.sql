@@ -5,5 +5,10 @@ CREATE TABLE user_profiles(
     city VARCHAR,
     age INT,
     url VARCHAR,
-    user_id INTEGER NOT NULL REFERENCES users(id) UNIQUE
+    user_id INTEGER NOT NULL UNIQUE
 );
+
+ALTER TABLE user_profiles
+    ADD FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE;

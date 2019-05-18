@@ -247,12 +247,21 @@ app.post("/edit-profile", (req, res) => {
 });
 
 app.post("/deleteSignature", (req, res) => {
-    db.deleteSignature(req.session.userID)
+    db.deleteSignature(req.session.signID)
         .then(qResponse => {
             delete req.session.signID;
             res.redirect("/petition");
         })
         .catch(err => console.log(err));
+});
+
+app.post("/deleteAccount", (req, res) => {
+    db.deleteAccount(req.session.userID)
+        .then(qResponse => {
+            req.session = null;
+            res.redirect("/registration");
+        })
+        .catch(console.log(err));
 });
 
 app.post("/logout", (req, res) => {

@@ -120,6 +120,10 @@ module.exports.upsertUserProfile = function upsertUserProfile(
     );
 };
 
-module.exports.deleteSignature = function deleteSignature(user_id) {
-    return db.query(`DELETE FROM signatures WHERE user_id=$1`, [user_id]);
+module.exports.deleteSignature = function deleteSignature(sign_id) {
+    return db.query(`DELETE FROM signatures WHERE user_id=$1`, [sign_id]);
+};
+
+module.exports.deleteAccount = function deleteAccount(user_id) {
+    return db.query(`DELETE FROM users WHERE id=$1`, [user_id]);
 };
