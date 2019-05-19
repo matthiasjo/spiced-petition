@@ -1,5 +1,15 @@
-
-<p>Edit your profile page</p>
+<section class="hero">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class=" title">
+        Edit your profile
+      </h1>
+      <h2 class="subtitle">
+        Your place to make a change!
+      </h2>
+    </div>
+  </div>
+</section>
 
 {{#if error}}
 <p class="error">{{error}}</p>
@@ -9,30 +19,37 @@
 <p class="message">{{message}}</p>
 {{/if}}
 
-<form class="" action="/edit-profile" method="post">
+<form class="formular" action="/edit-profile" method="post">
     {{#Data}}
-    <input type="text" name="firstName" value="{{name}}">
-    <input type="text" name="lastName" value="{{surname}}">
-    <input type="email" name="email" value="{{email}}">
-    <input type="password" name="password" value="">
-    <input type="number" name="age" value="{{age}}">
-    <input type="text" name="city" value="{{city}}">
-    <input type="url" name="url" value="{{url}}">
+    <label for="firstName" class="label">First Name</label>
+    <input class="input" type="text" name="firstName" value="{{name}}">
+    <label for="lastName" class="label">Last Name</label>
+    <input class="input" type="text" name="lastName" value="{{surname}}">
+    <label for="email" class="label">Email</label>
+    <input class="input" type="email" name="email" value="{{email}}">
+    <label for="password" class="label">Password</label>
+    <input class="input" type="password" name="password" value="">
+    <label for="age" class="label">Age</label>
+    <input class="input" type="number" name="age" value="{{age}}">
+    <label for="city" class="label">City</label>
+    <input class="input" type="text" name="city" value="{{city}}">
+    <label for="url" class="label">Homepage</label>
+    <input class="input" type="url" name="url" value="{{url}}">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    <button type="submit" name="button">Update Profile</button>
+    <button class="button is-warning cButton" type="submit" name="button">Update Profile</button>
     {{/Data}}
 </form>
 
 {{#if signature}}
-<img src="{{signature}}" alt="signature">
-<form class="" action="/deleteSignature" method="post">
+<img class="signatureImg" src="{{signature}}" alt="signature">
+<form class="formular" action="/deleteSignature" method="post">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    <button type="submit" name="button">Delete Signature</button>
+    <button class="button is-warning cButton" type="submit" name="button">Delete Signature</button>
 </form>
 {{/if}}
 
 
-<form class="" action="/deleteAccount" method="post">
+<form class="formular" action="/deleteAccount" method="post">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    <button type="submit" name="button">DELETE ACCOUNT</button>
+    <button class="button is-warning cButton" type="submit" name="button">DELETE ACCOUNT</button>
 </form>

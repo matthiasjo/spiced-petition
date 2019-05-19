@@ -1,15 +1,35 @@
 
-<p>placeholder image</p>
+<section class="hero">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class=" title">
+        Please login
+      </h1>
+      <h2 class="subtitle">
+        Only logged in users can sign the petition
+      </h2>
+    </div>
+  </div>
+</section>
 
-<p>Please login</p>
+<section class="section level">
+
+<div class="container">
 
 {{#if error}}
-<p id="error">{{error}}</p>
+<h2 class="notification is-danger">
+  {{error}}
+</h2>
 {{/if}}
 
-<form class="" action="/login" method="post">
-    <input type="email" name="email" value="" placeholder="email">
-    <input type="password" name="password" value="" placeholder="password">
+<form class="formular" action="/login" method="post">
+    <label for="email" class="label">Email</label>
+    <input  class="input" type="email" name="email" value="" placeholder="email">
+    <label for="password" class="label">Password</label>
+    <input  class="input" type="password" name="password" value="" placeholder="password">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    <button type="submit" name="button">LOG IN</button>
+    <button type="submit" class="button is-warning cButton" name="button">LOG IN</button>
 </form>
+
+</div>
+</section>

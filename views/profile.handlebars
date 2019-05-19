@@ -1,12 +1,23 @@
+<section class="hero">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class=" title">
+        Create your profile
+      </h1>
+      <h2 class="subtitle">
+        Bees need to no your data and location to be saved
+      </h2>
+    </div>
+  </div>
+</section>
 
-<p>We need your personal data to get rich like any other company</p>
-
-<p>Give it to us</p>
-
-<form class="" action="/profile" method="post">
-    <input type="number" name="age" value="" placeholder="age">
-    <input type="text" name="city" value="" placeholder="city">
-    <input type="url" name="personalHomepage" value="" placeholder="Homepage">
+<form class="formular" action="/profile" method="post">
+    <label for="age" class="label">Age</label>
+    <input class="input" type="number" name="age" value="" placeholder="age">
+    <label for="city" class="label">City</label>
+    <input class="input" type="text" name="city" value="" placeholder="city">
+    <label for="homepage" class="label">Homepage</label>
+    <input class="input" type="url" name="homepage" value="" placeholder="Homepage">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    <button type="submit" name="button">SIGN PETITION</button>
+    <button class="button is-warning cButton" type="submit" name="button">SIGN PETITION</button>
 </form>

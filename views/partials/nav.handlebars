@@ -1,11 +1,37 @@
-<ul class="nav">
-    <li><a href="/petition">Petition</a></li>
-    <li><a href="/registration">Register</a></li>
-    <li><a href="/petition/signers">See who already signed</a></li>
-    <li><a href="/edit-profile">Edit Profile</a></li>
-    <li><a href="/login">Login</a></li>
-    <form class="" action="/logout" method="post">
+<nav class="level navbar cnavbar">
+    <p class="level-item has-text-centered">
+ <a class="link is-info" href="/">Home</a>
+</p>
+<p class="level-item has-text-centered">
+<a class="link is-info" href="/about">About</a>
+</p>
+    <p class="level-item has-text-centered">
+    <a class="link is-info" href="/petition">Petition</a>
+    </p>
+    <p class="level-item has-text-centered">
+  <a href="/"><img src="/bee_nav.svg" alt="" style="height: 5rem;"></a>
+</p>
+    <p class="level-item has-text-centered">
+    <a class="link is-info" href="/petition/signers">Signees</a>
+    </p>
+    {{#if activeUser}}
+    <p class="level-item has-text-centered">
+    <a class="link is-info" href="/edit-profile">Edit Profile</a>
+    </p>
+    {{else}}
+    <p class="level-item has-text-centered">
+    <a class="link is-info" href="/registration">Sign up</a>
+    </p>
+    {{/if}}
+    {{#if activeUser}}
+    <form action="/logout" method="post" class="level-item has-text-centered">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    <button type="submit" name="logout">logout</button>
+    <button class="button is-warning" type="submit" name="logout">logout</button>
     </form>
-</ul>
+    {{else}}
+    <form action="/login" method="get" class="level-item has-text-centered">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        <button type="submit" class="button is-success" href="/login" name="login">Login</button>
+    </form>
+    {{/if}}
+</nav>

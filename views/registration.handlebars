@@ -1,16 +1,41 @@
-<p>placeholder image</p>
+<section class="hero">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class=" title">
+        Registration
+      </h1>
+      <h2 class="subtitle">
+        Please sign up to sign the petition to save the bees
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+<section class="section level">
+
+<div class="container">
 
 {{#if error}}
-<p>{{error}}</p>
+<h2 class="notification is-danger">
+  {{error}}
+</h2>
 {{/if}}
 
-<form class="" action="/registration" method="post">
-    <input type="text" name="firstName" value="" placeholder="first name">
-    <input type="text" name="lastName" value="" placeholder="last name">
-    <input type="email" name="email" value="" placeholder="email">
-    <input type="password" name="password" value="" placeholder="password">
+<form class="formular" action="/registration" method="post">
+    <label for="firstName" class="label">First Name</label>
+    <input class="input" type="text" name="firstName" value="" placeholder="first name">
+<label for="lastName" class="label">Last Name</label>
+    <input class="input" type="text" name="lastName" value="" placeholder="last name">
+    <label for="email" class="label">Email</label>
+    <input class="input" type="email" name="email" value="" placeholder="email">
+    <label for="password" class="label">Password</label>
+    <input class="input" type="password" name="password" value="" placeholder="password">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    <button type="submit" name="button">Submit</button>
+    <button class="button is-warning cButton" type="submit" name="button">Register</button>
 </form>
 
-<p>If you are already a member, please <a href="/login">log in</a>.</p>
+<p class="notification is-info">If you are already a member, please <a href="/login">log in</a>.</p>
+
+</div>
+</section>

@@ -1,22 +1,39 @@
 
-<h2>Save the Bees!<h2>
+<section class="hero">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">
+        Petition
+      </h1>
+      <h2 class="subtitle">
+        Please sign the Petition to save Beekind
+      </h2>
+    </div>
+  </div>
+</section>
 
-<div class="textbox">
-    <img src="/bee.jpg" alt="bee">
-    <p> {{first}} {{last}}, please join the good cause to save the bees</p>
+<div class="container">
+
+<h3 class="subtitle is-3">The honeyjar is not half empty yet!</h3>
+{{#if first}}
+<h3 class="subtitle is-3">{{first}} {{last}}, please join us!</h3>
+{{else}}
+<h3 class="subtitle is-3">Please join us!</h3>
+{{/if}}
 </div>
 
-{{#if error}}
-<p id="error">{{error}}</p>
-{{/if}}
-
-<form class="" action="/petition" method="post">
-<canvas id="canSign">Signature</canvas>
+<form class="formular is-pulled-right" action="/petition" method="post">
+    {{#if error}}
+    <h2 class="notification is-danger">
+      {{error}}
+    </h2>
+    {{/if}}
+<canvas id="canSign" width="600" height="200">Signature</canvas>
 <input id="signatureField" type="hidden" name="signature" value=""></input>
 <input type="hidden" name="_csrf" value="{{csrfToken}}">
-<button type="submit" name="button">Submit</button>
+<button class="button is-primary cButton" type="submit" name="button">Submit</button>
 </form>
+</section>
 
-<script type="text/javascript" src="/signatureField.js">
 
-</script>
+<script type="text/javascript" src="/signatureField.js"></script>

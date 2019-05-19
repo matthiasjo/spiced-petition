@@ -12,9 +12,8 @@ const helmet = require("helmet");
 // TODO error handling.
 // TODO code cleaning.
 // TODO security stuff added csurf and helmet. maybe more security?
-// TODO getCount
 // redirect from petition to list if signed
-// TODO CSS + TEXT
+// TODO TEXT
 
 const app = express();
 app.use(helmet());
@@ -40,10 +39,24 @@ app.use(function(req, res, next) {
     next();
 });
 
+app.get("/", (req, res) => {
+    res.render("home", {
+        layout: "main",
+        activeUser: req.session.userID
+    });
+});
+
+app.get("/about", (req, res) => {
+    res.render("about", {
+        layout: "main",
+        activeUser: req.session.userID
+    });
+});
+
 app.get("/registration", (req, res) => {
     res.render("registration", {
         layout: "main",
-        siteName: "Petition registration"
+        activeUser: req.session.userID
     });
 });
 
@@ -63,10 +76,20 @@ app.post("/registration", (req, res) => {
                     req.session.email = qResponse.rows[0].email;
                     res.redirect("/profile");
                 })
-                .catch(err => console.log(err));
+                .catch(err => {
+                    res.render("registration", {
+                        layout: "main",
+                        error: "Wrong input. Try again",
+                        activeUser: req.session.userID
+                    });
+                });
         })
         .catch(err => {
-            // if invalid input render registration with error
+            res.render("registration", {
+                layout: "main",
+                error: "Wrong input. Try again",
+                activeUser: req.session.userID
+            });
             console.log(err);
         });
 });
@@ -74,18 +97,18 @@ app.post("/registration", (req, res) => {
 app.get("/profile", (req, res) => {
     res.render("profile", {
         layout: "main",
-        siteName: "We need more information"
+        activeUser: req.session.userID
     });
 });
 app.post("/profile", (req, res) => {
-    const { city, age, personalHomepage } = req.body;
-    if (!city && !age && !personalHomepage) {
+    const { city, age, homepage } = req.body;
+    if (!city && !age && !homepage) {
         res.redirect("/petition");
     } else {
         db.createProfile(
             req.body.city,
             req.body.age,
-            req.body.personalHomepage,
+            req.body.homepage,
             req.session.userID
         )
             .then(session => {
@@ -97,32 +120,38 @@ app.post("/profile", (req, res) => {
 });
 
 app.get("/petition", (req, res) => {
-    if (req.session.signatureId) {
+    if (req.session.signID) {
         res.redirect("/petition/signed");
     } else {
         res.render("petition", {
             layout: "main",
-            siteName: "Save the Bees",
             first: req.session.firstName,
-            last: req.session.lastName
+            last: req.session.lastName,
+            activeUser: req.session.userID
         });
     }
 });
 
 app.post("/petition", (req, res) => {
-    db.addSignature(req.body.signature, req.session.userID)
-        .then(qResponse => {
-            req.session.signID = qResponse.rows[0].id;
-            res.redirect("/petition/signed");
-        })
-        .catch(err => {
-            console.log(err);
-            res.render("petition", {
-                layout: "main",
-                siteName: "Save the Bees",
-                error: "Wrong input. Try again"
+    if (req.session.userID) {
+        db.addSignature(req.body.signature, req.session.userID)
+            .then(qResponse => {
+                req.session.signID = qResponse.rows[0].id;
+                res.redirect("/petition/signed");
+            })
+            .catch(err => {
+                console.log(err);
+                res.render("petition", {
+                    layout: "main",
+                    error: "Wrong input. Try again"
+                });
             });
+    } else if (!req.session.userID && !req.session.signID) {
+        res.render("petition", {
+            layout: "main",
+            error: "Please register or log in before signing the petition"
         });
+    }
 });
 
 app.get("/petition/signed", (req, res) => {
@@ -130,9 +159,9 @@ app.get("/petition/signed", (req, res) => {
         .then(results => {
             res.render("signed", {
                 layout: "main",
-                siteName: "Thank you for supporting this cause",
                 signatureUrl: results[1].rows[0].signature,
-                numSigner: results[0].rows[0].count
+                numSigner: results[0].rows[0].count,
+                activeUser: req.session.userID
             });
         })
         .catch(err => {
@@ -141,13 +170,13 @@ app.get("/petition/signed", (req, res) => {
 });
 
 app.get("/petition/signers", (req, res) => {
-    db.getList()
+    Promise.all([db.getCount(), db.getList()])
         .then(qResponse => {
             res.render("signers", {
                 layout: "main",
-                siteName: "List of worker Bees",
-                Data: qResponse.rows
-                //sumSigners: req.session.id
+                numSigners: qResponse[0].rows[0].count,
+                Data: qResponse[1].rows,
+                activeUser: req.session.userID
             });
         })
         .catch(err => console.log(err));
@@ -159,8 +188,8 @@ app.get("/petition/signers/:city", (req, res) => {
             res.render("signers", {
                 layout: "main",
                 siteName: "List of worker Bees",
-                Data: qResponse.rows
-                // sumSigners: req.session.id
+                Data: qResponse.rows,
+                activeUser: req.session.userID
             });
         })
         .catch(err => console.log(err));
@@ -169,7 +198,7 @@ app.get("/petition/signers/:city", (req, res) => {
 app.get("/login", (req, res) => {
     res.render("login", {
         layout: "main",
-        siteName: "Petition login"
+        activeUser: req.session.userID
     });
 });
 
@@ -191,7 +220,7 @@ app.post("/login", (req, res) => {
                 .catch(err => {
                     res.render("login", {
                         layout: "main",
-                        siteName: "Login to Bee Petition",
+                        activeUser: req.session.userID,
                         error: err.message
                     });
                 });
@@ -204,9 +233,9 @@ app.get("/edit-profile", (req, res) => {
         .then(qResponse => {
             res.render("editProfile", {
                 layout: "main",
-                siteName: "editProfile",
                 Data: qResponse.rows,
-                signature: qResponse.rows[0].signature
+                signature: qResponse.rows[0].signature,
+                activeUser: req.session.userID
             });
         })
         .catch(err => console.log(err));
@@ -251,10 +280,10 @@ app.post("/edit-profile", (req, res) => {
             .then(qResponse => {
                 res.render("editProfile", {
                     layout: "main",
-                    siteName: "editProfile",
                     message: "Profile update complete!",
                     Data: qResponse.rows,
-                    signature: qResponse.rows[0].signature
+                    signature: qResponse.rows[0].signature,
+                    activeUser: req.session.userID
                 });
             })
             .catch(err => console.log(err));

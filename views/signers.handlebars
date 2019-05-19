@@ -1,16 +1,33 @@
 
-
-<p>List of the last 20 people who signed this petition.</p>
-<p>{{sumSigners}} people signed this petition so far</p>
-
-<p>placeholder for some image</p>
-
-<ul>
-    {{#Data}}
-     {{#if url}}
-    <li><a href="{{url}}">{{name}} {{surname}}</a> {{age}} <a href="/petition/signers/{{city}}">{{city}}</a></li>
-    {{else}}
-    <li>{{name}} {{surname}} {{age}} <a href="/petition/signers/{{city}}">{{city}}</a></li>
+<section class="hero">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class=" title">
+        Honorable Signees
+      </h1>
+      <h2 class="subtitle">
+        See who signed this petition
+      </h2>
+    </div>
+  </div>
+</section>
+<div class="container">
+    <h3 class="subtitle is-5">List of all the people, who signed this petition.</h3>
+    {{#if numSigners}}
+    <h3 class="subtitle is-5">{{numSigners}} people signed this petition so far</h3>
     {{/if}}
-    {{/Data}}
-</ul>
+</div>
+
+<div class="petitionlist">
+    <section class="container level-item">
+    <ul class="content">
+        {{#Data}}
+         {{#if url}}
+        <li class="notification"><a href="{{url}}">{{name}} {{surname}}</a> {{age}} <a href="/petition/signers/{{city}}">{{city}}</a></li>
+        {{else}}
+        <li class="notification">{{name}} {{surname}} {{age}} <a href="/petition/signers/{{city}}">{{city}}</a></li>
+        {{/if}}
+        {{/Data}}
+    </ul>
+    </section>
+</div>
