@@ -8,10 +8,9 @@ const cookieSession = require("cookie-session");
 const csurf = require("csurf");
 const helmet = require("helmet");
 
-// (optional) partials for nav handlebars
 // TODO error handling.
 // TODO code cleaning.
-// TODO security stuff added csurf and helmet. maybe more security?
+// TODO maybe more security?
 // redirect from petition to list if signed
 // TODO TEXT
 
@@ -20,6 +19,9 @@ app.use(helmet());
 const port = 8080;
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.use(
     cookieSession({
@@ -30,12 +32,10 @@ app.use(
     })
 );
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
 app.use(csurf());
 app.use(function(req, res, next) {
     res.locals.csrfToken = req.csrfToken();
+    res.setHeader(`X-FRAME-OPTIONS`, `DENY`);
     next();
 });
 
@@ -61,6 +61,9 @@ app.get("/registration", (req, res) => {
 });
 
 app.post("/registration", (req, res) => {
+    if (req.session.userID) {
+        res.redirect("/editProfile");
+    }
     bc.hashPassword(req.body.password)
         .then(pwHash => {
             db.addUser(
@@ -228,7 +231,7 @@ app.post("/login", (req, res) => {
         .catch(err => console.log(err));
 });
 
-app.get("/edit-profile", (req, res) => {
+app.get("/editProfile", (req, res) => {
     db.selectUser(req.session.email)
         .then(qResponse => {
             res.render("editProfile", {
@@ -241,7 +244,7 @@ app.get("/edit-profile", (req, res) => {
         .catch(err => console.log(err));
 });
 
-app.post("/edit-profile", (req, res) => {
+app.post("/editProfile", (req, res) => {
     const { firstName, lastName, email, password, age, city, url } = req.body;
     const editProfile = async () => {
         try {
@@ -276,8 +279,9 @@ app.post("/edit-profile", (req, res) => {
         }
     };
     editProfile().then(result => {
-        db.selectUser(req.session.email)
+        db.selectUser(req.body.email)
             .then(qResponse => {
+                req.session.email = qResponse.rows[0].email;
                 res.render("editProfile", {
                     layout: "main",
                     message: "Profile update complete!",
@@ -301,9 +305,11 @@ app.post("/deleteSignature", (req, res) => {
 
 app.post("/deleteAccount", (req, res) => {
     db.deleteAccount(req.session.userID)
-        .then(qResponse => {
+        .then(result => {
+            console.log(result);
             req.session = null;
-            res.redirect("/registration");
+            delete req.session;
+            res.redirect("/");
         })
         .catch(console.log(err));
 });

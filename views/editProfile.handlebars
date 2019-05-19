@@ -16,10 +16,10 @@
 {{/if}}
 
 {{#if message}}
-<p class="message">{{message}}</p>
+<p class="notification is-success">{{message}}</p>
 {{/if}}
 
-<form class="formular" action="/edit-profile" method="post">
+<form class="formular" action="/editProfile" method="post">
     {{#Data}}
     <label for="firstName" class="label">First Name</label>
     <input class="input" type="text" name="firstName" value="{{name}}">
@@ -35,9 +35,10 @@
     <input class="input" type="text" name="city" value="{{city}}">
     <label for="url" class="label">Homepage</label>
     <input class="input" type="url" name="url" value="{{url}}">
+    {{/Data}}
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <button class="button is-warning cButton" type="submit" name="button">Update Profile</button>
-    {{/Data}}
+
 </form>
 
 {{#if signature}}

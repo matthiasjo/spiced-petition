@@ -102,7 +102,7 @@ module.exports.updateUser = function updateUser(
         );
     } else if (!hashPw) {
         return db.query(
-            `UPDATE users SET name = $1, surname = $2, email = $3 WHERE id = $4;`,
+            `UPDATE users SET name = $1, surname = $2, email = $3 WHERE id = $4 RETURNING name, surname, email;`,
             [name, surname, email, id]
         );
     }
