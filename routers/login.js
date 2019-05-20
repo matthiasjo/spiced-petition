@@ -3,19 +3,30 @@ const router = express.Router();
 const db = require("../utils/db");
 const bc = require("../utils/db");
 //const { requireNoSignature } = require("../middleware");
+const expressSanitizer = require("express-sanitizer");
+const bodyParser = require("body-parser");
 
 module.exports = router;
+
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
+router.use(expressSanitizer());
 
 router
     .route("/login")
     .get((req, res) => {
-        res.render("login", {
-            layout: "main",
-            activeUser: req.session.userID
-        });
+        if (!req.session.userID) {
+            res.render("login", {
+                layout: "main",
+                activeUser: req.session.userID
+            });
+        } else {
+            res.redirect("/");
+        }
     })
     .post((req, res) => {
-        db.selectUser(req.body.email)
+        console.log("MAIL", req.sanitize(req.body.email));
+        db.selectUser(req.sanitize(req.body.email))
             .then(qResponse => {
                 const pwHash = qResponse.rows[0].password;
                 bc.checkPassword(req.body.password, pwHash)
@@ -37,5 +48,12 @@ router
                         });
                     });
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                console.log(err);
+                res.render("login", {
+                    layout: "main",
+                    activeUser: req.session.userID,
+                    error: "You don't seem part of the hive!"
+                });
+            });
     });

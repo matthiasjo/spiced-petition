@@ -16,10 +16,8 @@ const petitionRouter = require("./routers/petition");
 const signersRouter = require("./routers/signers");
 const thankYouRouter = require("./routers/thankYou");
 
-// TODO error handling.
 // TODO maybe more security?
 // TODO TEXT
-// HTTP URL INPUT CLEANING
 
 const app = express();
 exports.app = app;

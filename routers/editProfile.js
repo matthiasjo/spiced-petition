@@ -2,8 +2,14 @@ const express = require("express");
 const router = express.Router();
 const db = require("../utils/db");
 const { requireNoSignature } = require("../middleware");
+const expressSanitizer = require("express-sanitizer");
+const bodyParser = require("body-parser");
 
 module.exports = router;
+
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
+router.use(expressSanitizer());
 
 router
     .route("/editProfile")
@@ -20,15 +26,12 @@ router
             .catch(err => console.log(err));
     })
     .post((req, res) => {
-        const {
-            firstName,
-            lastName,
-            email,
-            password,
-            age,
-            city,
-            url
-        } = req.body;
+        const firstName = req.sanitize(req.body.firstName);
+        const lastName = req.sanitize(req.body.lastName);
+        const email = req.sanitize(req.body.email);
+        const url = req.sanitize(req.body.homepage);
+        const city = req.sanitize(req.body.city);
+        const age = req.sanitize(req.body.age);
         const editProfile = async () => {
             try {
                 const hashPW = await bc.hashPassword(req.body.password);
@@ -61,7 +64,7 @@ router
             }
         };
         editProfile().then(result => {
-            db.selectUser(req.body.email)
+            db.selectUser(req.sanitize(req.body.email))
                 .then(qResponse => {
                     req.session.email = qResponse.rows[0].email;
                     res.render("editProfile", {

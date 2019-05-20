@@ -2,8 +2,14 @@ const express = require("express");
 const router = express.Router();
 const db = require("../utils/db");
 const { requireNoSignature } = require("../middleware");
+const expressSanitizer = require("express-sanitizer");
+const bodyParser = require("body-parser");
 
 module.exports = router;
+
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
+router.use(expressSanitizer());
 
 router
     .route("/profile")
@@ -14,20 +20,23 @@ router
         });
     })
     .post((req, res) => {
-        const { city, age, homepage } = req.body;
-        if (!city && !age && !homepage) {
+        const url = req.sanitize(req.body.homepage);
+        const city = req.sanitize(req.body.city);
+        const age = req.sanitize(req.body.age);
+        if (!city && !age && !url) {
             res.redirect("/petition");
         } else {
-            db.createProfile(
-                req.body.city,
-                req.body.age,
-                req.body.homepage,
-                req.session.userID
-            )
-                .then(session => {
-                    console.log(session);
+            db.createProfile(city, age, url, req.session.userID)
+                .then(() => {
                     res.redirect("/petition");
                 })
-                .catch(err => console.log(err));
+                .catch(err => {
+                    console.log(err);
+                    res.render("registration", {
+                        layout: "main",
+                        error: "Wrong input. Try again",
+                        activeUser: req.session.userID
+                    });
+                });
         }
     });

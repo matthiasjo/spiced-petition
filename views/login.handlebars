@@ -24,9 +24,9 @@
 
 <form class="formular" action="/login" method="post">
     <label for="email" class="label">Email</label>
-    <input  class="input" type="email" name="email" value="" placeholder="email">
+    <input required  class="input" type="email" name="email" value="" placeholder="email">
     <label for="password" class="label">Password</label>
-    <input  class="input" type="password" name="password" value="" placeholder="password">
+    <input required  class="input" type="password" name="password" value="" placeholder="password">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <button type="submit" class="button is-warning cButton" name="button">LOG IN</button>
 </form>

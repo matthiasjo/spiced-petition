@@ -24,13 +24,13 @@
 
 <form class="formular" action="/registration" method="post">
     <label for="firstName" class="label">First Name</label>
-    <input class="input" type="text" name="firstName" value="" placeholder="first name">
+    <input required class="input" type="text" name="firstName" value="" placeholder="first name">
 <label for="lastName" class="label">Last Name</label>
-    <input class="input" type="text" name="lastName" value="" placeholder="last name">
+    <input required class="input" type="text" name="lastName" value="" placeholder="last name">
     <label for="email" class="label">Email</label>
-    <input class="input" type="email" name="email" value="" placeholder="email">
+    <input required class="input" type="email" name="email" value="" placeholder="email">
     <label for="password" class="label">Password</label>
-    <input class="input" type="password" name="password" value="" placeholder="password">
+    <input required class="input" type="password" name="password" value="" placeholder="password">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <button class="button is-warning cButton" type="submit" name="button">Register</button>
 </form>
