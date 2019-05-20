@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const db = require(".././utils/db");
-const bc = require(".././utils/db");
+const db = require("../utils/db");
+const bc = require("../utils/db");
 //const { requireNoSignature } = require("../middleware");
 
 module.exports = router;

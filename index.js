@@ -1,7 +1,7 @@
 const express = require("express");
 const serveStatic = require("serve-static");
 const db = require("./utils/db");
-const bc = require("./utils/bc");
+//const bc = require("./utils/bc");
 const hb = require("express-handlebars");
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
@@ -22,6 +22,7 @@ const thankYouRouter = require("./routers/thankYou");
 // HTTP URL INPUT CLEANING
 
 const app = express();
+exports.app = app;
 app.use(helmet());
 const port = 8080;
 app.engine("handlebars", hb());
@@ -58,6 +59,14 @@ app.get("/about", (req, res) => {
         layout: "main",
         activeUser: req.session.userID
     });
+});
+
+app.get("/test", (req, res) => {
+    if (!req.session.whatever) {
+        res.redirect("/registration");
+    } else {
+        res.send(`<h1>test site</h1>`);
+    }
 });
 
 app.use(registerRouter);
@@ -101,6 +110,8 @@ app.post("/logout", (req, res) => {
 
 app.use(serveStatic("./public"));
 
-app.listen(process.env.PORT || port, () =>
-    console.log(`This server is listening on port ${port}`)
-);
+if (require.main == module) {
+    app.listen(process.env.PORT || port, () =>
+        console.log(`This server is listening on port ${port}`)
+    );
+}
