@@ -1,0 +1,77 @@
+const express = require("express");
+const router = express.Router();
+const db = require(".././utils/db");
+const { requireNoSignature } = require("../middleware");
+
+module.exports = router;
+
+router
+    .route("/editProfile")
+    .get((req, res) => {
+        db.selectUser(req.session.email)
+            .then(qResponse => {
+                res.render("editProfile", {
+                    layout: "main",
+                    Data: qResponse.rows,
+                    signature: qResponse.rows[0].signature,
+                    activeUser: req.session.userID
+                });
+            })
+            .catch(err => console.log(err));
+    })
+    .post((req, res) => {
+        const {
+            firstName,
+            lastName,
+            email,
+            password,
+            age,
+            city,
+            url
+        } = req.body;
+        const editProfile = async () => {
+            try {
+                const hashPW = await bc.hashPassword(req.body.password);
+                const userUpdate = await db.updateUser(
+                    firstName,
+                    lastName,
+                    email,
+                    hashPW,
+                    req.session.userID
+                );
+                const upsertProfile = await db.upsertUserProfile(
+                    city,
+                    age,
+                    url,
+                    req.session.userID
+                );
+            } catch {
+                const userUpdate = await db.updateUser(
+                    firstName,
+                    lastName,
+                    email,
+                    req.session.userID
+                );
+                const upsertProfile = await db.upsertUserProfile(
+                    city,
+                    age,
+                    url,
+                    req.session.userID
+                );
+            }
+        };
+        editProfile().then(result => {
+            db.selectUser(req.body.email)
+                .then(qResponse => {
+                    req.session.email = qResponse.rows[0].email;
+                    res.render("editProfile", {
+                        layout: "main",
+                        message: "Profile update complete!",
+                        Data: qResponse.rows,
+                        signature: qResponse.rows[0].signature,
+                        activeUser: req.session.userID
+                    });
+                })
+                .catch(err => console.log(err));
+        });
+    });

@@ -7,12 +7,19 @@ const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const csurf = require("csurf");
 const helmet = require("helmet");
+//const { requireNoSignature } = require("./middleware");
+const profileRouter = require("./routers/profile");
+const editProfileRouter = require("./routers/editProfile");
+const registerRouter = require("./routers/registration");
+const loginRouter = require("./routers/login");
+const petitionRouter = require("./routers/petition");
+const signersRouter = require("./routers/signers");
+const thankYouRouter = require("./routers/thankYou");
 
 // TODO error handling.
-// TODO code cleaning.
 // TODO maybe more security?
-// redirect from petition to list if signed
 // TODO TEXT
+// HTTP URL INPUT CLEANING
 
 const app = express();
 app.use(helmet());
@@ -53,250 +60,23 @@ app.get("/about", (req, res) => {
     });
 });
 
-app.get("/registration", (req, res) => {
-    res.render("registration", {
-        layout: "main",
-        activeUser: req.session.userID
-    });
-});
+app.use(registerRouter);
 
-app.post("/registration", (req, res) => {
-    if (req.session.userID) {
-        res.redirect("/editProfile");
-    }
-    bc.hashPassword(req.body.password)
-        .then(pwHash => {
-            db.addUser(
-                req.body.firstName,
-                req.body.lastName,
-                req.body.email,
-                pwHash
-            )
-                .then(qResponse => {
-                    req.session.userID = qResponse.rows[0].id;
-                    req.session.firstName = qResponse.rows[0].name;
-                    req.session.lastName = qResponse.rows[0].surname;
-                    req.session.email = qResponse.rows[0].email;
-                    res.redirect("/profile");
-                })
-                .catch(err => {
-                    res.render("registration", {
-                        layout: "main",
-                        error: "Wrong input. Try again",
-                        activeUser: req.session.userID
-                    });
-                });
-        })
-        .catch(err => {
-            res.render("registration", {
-                layout: "main",
-                error: "Wrong input. Try again",
-                activeUser: req.session.userID
-            });
-            console.log(err);
-        });
-});
+app.use(profileRouter);
 
-app.get("/profile", (req, res) => {
-    res.render("profile", {
-        layout: "main",
-        activeUser: req.session.userID
-    });
-});
-app.post("/profile", (req, res) => {
-    const { city, age, homepage } = req.body;
-    if (!city && !age && !homepage) {
-        res.redirect("/petition");
-    } else {
-        db.createProfile(
-            req.body.city,
-            req.body.age,
-            req.body.homepage,
-            req.session.userID
-        )
-            .then(session => {
-                console.log(session);
-                res.redirect("/petition");
-            })
-            .catch(err => console.log(err));
-    }
-});
+app.use(petitionRouter);
 
-app.get("/petition", (req, res) => {
-    if (req.session.signID) {
-        res.redirect("/petition/signed");
-    } else {
-        res.render("petition", {
-            layout: "main",
-            first: req.session.firstName,
-            last: req.session.lastName,
-            activeUser: req.session.userID
-        });
-    }
-});
+app.use(thankYouRouter);
 
-app.post("/petition", (req, res) => {
-    if (req.session.userID) {
-        db.addSignature(req.body.signature, req.session.userID)
-            .then(qResponse => {
-                req.session.signID = qResponse.rows[0].id;
-                res.redirect("/petition/signed");
-            })
-            .catch(err => {
-                console.log(err);
-                res.render("petition", {
-                    layout: "main",
-                    error: "Wrong input. Try again"
-                });
-            });
-    } else if (!req.session.userID && !req.session.signID) {
-        res.render("petition", {
-            layout: "main",
-            error: "Please register or log in before signing the petition"
-        });
-    }
-});
+app.use(signersRouter);
 
-app.get("/petition/signed", (req, res) => {
-    Promise.all([db.getCount(), db.getSignature(req.session.signID)])
-        .then(results => {
-            res.render("signed", {
-                layout: "main",
-                signatureUrl: results[1].rows[0].signature,
-                numSigner: results[0].rows[0].count,
-                activeUser: req.session.userID
-            });
-        })
-        .catch(err => {
-            console.log(err);
-        });
-});
+app.use(loginRouter);
 
-app.get("/petition/signers", (req, res) => {
-    Promise.all([db.getCount(), db.getList()])
-        .then(qResponse => {
-            res.render("signers", {
-                layout: "main",
-                numSigners: qResponse[0].rows[0].count,
-                Data: qResponse[1].rows,
-                activeUser: req.session.userID
-            });
-        })
-        .catch(err => console.log(err));
-});
-
-app.get("/petition/signers/:city", (req, res) => {
-    db.getCityList(req.params.city)
-        .then(qResponse => {
-            res.render("signers", {
-                layout: "main",
-                siteName: "List of worker Bees",
-                Data: qResponse.rows,
-                activeUser: req.session.userID
-            });
-        })
-        .catch(err => console.log(err));
-});
-
-app.get("/login", (req, res) => {
-    res.render("login", {
-        layout: "main",
-        activeUser: req.session.userID
-    });
-});
-
-app.post("/login", (req, res) => {
-    db.selectUser(req.body.email)
-        .then(qResponse => {
-            const pwHash = qResponse.rows[0].password;
-            bc.checkPassword(req.body.password, pwHash)
-                .then(pwMatch => {
-                    if (pwMatch == true) {
-                        req.session.userID = qResponse.rows[0].user_id;
-                        req.session.signID = qResponse.rows[0].sign_id;
-                        req.session.email = qResponse.rows[0].email;
-                        res.redirect("/petition/signers");
-                    } else {
-                        throw new Error("wrong password");
-                    }
-                })
-                .catch(err => {
-                    res.render("login", {
-                        layout: "main",
-                        activeUser: req.session.userID,
-                        error: err.message
-                    });
-                });
-        })
-        .catch(err => console.log(err));
-});
-
-app.get("/editProfile", (req, res) => {
-    db.selectUser(req.session.email)
-        .then(qResponse => {
-            res.render("editProfile", {
-                layout: "main",
-                Data: qResponse.rows,
-                signature: qResponse.rows[0].signature,
-                activeUser: req.session.userID
-            });
-        })
-        .catch(err => console.log(err));
-});
-
-app.post("/editProfile", (req, res) => {
-    const { firstName, lastName, email, password, age, city, url } = req.body;
-    const editProfile = async () => {
-        try {
-            const hashPW = await bc.hashPassword(req.body.password);
-            const userUpdate = await db.updateUser(
-                firstName,
-                lastName,
-                email,
-                hashPW,
-                req.session.userID
-            );
-            const upsertProfile = await db.upsertUserProfile(
-                city,
-                age,
-                url,
-                req.session.userID
-            );
-        } catch {
-            const userUpdate = await db.updateUser(
-                firstName,
-                lastName,
-                email,
-                //password
-                req.session.userID
-            );
-            const upsertProfile = await db.upsertUserProfile(
-                city,
-                age,
-                url,
-                req.session.userID
-            );
-        }
-    };
-    editProfile().then(result => {
-        db.selectUser(req.body.email)
-            .then(qResponse => {
-                req.session.email = qResponse.rows[0].email;
-                res.render("editProfile", {
-                    layout: "main",
-                    message: "Profile update complete!",
-                    Data: qResponse.rows,
-                    signature: qResponse.rows[0].signature,
-                    activeUser: req.session.userID
-                });
-            })
-            .catch(err => console.log(err));
-    });
-});
+app.use(editProfileRouter);
 
 app.post("/deleteSignature", (req, res) => {
     db.deleteSignature(req.session.signID)
-        .then(qResponse => {
+        .then(() => {
             delete req.session.signID;
             res.redirect("/petition");
         })
@@ -311,7 +91,7 @@ app.post("/deleteAccount", (req, res) => {
             delete req.session;
             res.redirect("/");
         })
-        .catch(console.log(err));
+        .catch(err => console.log(err));
 });
 
 app.post("/logout", (req, res) => {
