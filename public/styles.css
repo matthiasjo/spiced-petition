@@ -11,6 +11,7 @@
     top: 0;
     left: 0;
     background-size: cover;
+    margin-top: 5vw;
     margin-left: 5vw;
     margin-right: 5vw;
     z-index: -5;

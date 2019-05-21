@@ -1,32 +1,32 @@
-<nav class="level navbar cnavbar">
+<nav class="level navbar cnavbar is-fixed-top">
     <p class="level-item has-text-centered">
- <a class="link is-info" href="/">Home</a>
+ <a class="link button is-light" href="/">Home</a>
 </p>
 <p class="level-item has-text-centered">
-<a class="link is-info" href="/about">About</a>
+<a class="link button is-light" href="/about">About</a>
 </p>
     <p class="level-item has-text-centered">
-    <a class="link is-info" href="/petition">Petition</a>
+    <a class="link button is-light" href="/petition">Petition</a>
     </p>
     <p class="level-item has-text-centered">
-  <a href="/"><img src="/bee_nav.svg" alt="" style="height: 5rem;"></a>
+  <a ><img class="navbar-burger" src="/bee_nav.svg" alt="" style="height: 5rem;"></a>
 </p>
     <p class="level-item has-text-centered">
-    <a class="link is-info" href="/petition/signers">Signees</a>
+    <a class="link button is-light" href="/petition/signers">Signees</a>
     </p>
     {{#if activeUser}}
     <p class="level-item has-text-centered">
-    <a class="link is-info" href="/editProfile">Edit Profile</a>
+    <a class="link button is-light" href="/editProfile">Edit Profile</a>
     </p>
     {{else}}
     <p class="level-item has-text-centered">
-    <a class="link is-info" href="/registration">Sign up</a>
+    <a class="link button is-light" href="/registration">Sign up</a>
     </p>
     {{/if}}
     {{#if activeUser}}
     <form action="/logout" method="post" class="level-item has-text-centered">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    <button class="button is-warning" type="submit" name="logout">logout</button>
+    <button class="button is-danger" type="submit" name="logout">Logout</button>
     </form>
     {{else}}
     <form action="/login" method="get" class="level-item has-text-centered">
