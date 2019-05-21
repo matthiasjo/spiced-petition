@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../utils/db");
-const bc = require("../utils/db");
+const bc = require("../utils/bc");
 //const { requireNoSignature } = require("../middleware");
 const expressSanitizer = require("express-sanitizer");
 const bodyParser = require("body-parser");
@@ -25,7 +25,6 @@ router
         }
     })
     .post((req, res) => {
-        console.log("MAIL", req.sanitize(req.body.email));
         db.selectUser(req.sanitize(req.body.email))
             .then(qResponse => {
                 const pwHash = qResponse.rows[0].password;
