@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../utils/db");
+const bc = require("../utils/bc");
 const { requireNoSignature } = require("../middleware");
 const expressSanitizer = require("express-sanitizer");
 const bodyParser = require("body-parser");
