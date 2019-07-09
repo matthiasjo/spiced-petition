@@ -18,6 +18,6 @@ node index.js
 
 ### Screenshots of the project
 
-![Screenshot](/screenshots/scrn1.jpg?raw=true "Screenshot 1")
+![Screenshot](/screenshots/scrn1.png?raw=true "Screenshot 1")
 
-![Screenshot](/screenshots/scrn2.jpg?raw=true "Screenshot 2")
+![Screenshot](/screenshots/scrn2.png?raw=true "Screenshot 2")
