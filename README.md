@@ -3,6 +3,7 @@
 Spiced Academy: Petition Project
 
 The goal of this project was to study Handlebars, Express and getting more familiar with Node.js while creating a petition website.
+The topic "save the bees" was chosen randomly as a work in progress topic. This project has only a learning and demo purpose.
 
 ### Install dependencies
 
