@@ -1,37 +1,54 @@
 <nav class="level navbar cnavbar is-fixed-top">
-    <p class="level-item has-text-centered">
+    <p class="level-item nav-item has-text-centered">
  <a class="link button is-light" href="/">Home</a>
 </p>
-<p class="level-item has-text-centered">
+<p class="level-item nav-item has-text-centered">
 <a class="link button is-light" href="/about">About</a>
 </p>
-    <p class="level-item has-text-centered">
+    <p class="level-item nav-item has-text-centered">
     <a class="link button is-light" href="/petition">Petition</a>
     </p>
-    <p class="level-item has-text-centered">
-  <a ><img class="navbar-burger" src="/bee_nav.svg" alt="" style="height: 5rem;"></a>
+    <p  id="nav-toggle" class="level-item nav-toggle has-text-centered">
+  <img  id="navbee" src="/bee_nav.svg" alt="bee">
 </p>
-    <p class="level-item has-text-centered">
+    <p class="level-item nav-item has-text-centered">
     <a class="link button is-light" href="/petition/signers">Signees</a>
     </p>
     {{#if activeUser}}
-    <p class="level-item has-text-centered">
+    <p class="level-item nav-item has-text-centered">
     <a class="link button is-light" href="/editProfile">Edit Profile</a>
     </p>
     {{else}}
-    <p class="level-item has-text-centered">
+    <p class="level-item nav-item nav-item has-text-centered">
     <a class="link button is-light" href="/registration">Sign up</a>
     </p>
     {{/if}}
     {{#if activeUser}}
-    <form action="/logout" method="post" class="level-item has-text-centered">
+    <form action="/logout" method="post" class="level-item nav-item has-text-centered">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <button class="button is-danger" type="submit" name="logout">Logout</button>
     </form>
     {{else}}
-    <form action="/login" method="get" class="level-item has-text-centered">
+    <form action="/login" method="get" class="level-item nav-item has-text-centered">
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <button type="submit" class="button is-success" href="/login" name="login">Login</button>
     </form>
     {{/if}}
 </nav>
+
+<script type="text/javascript">
+(function() {
+var $toggle = $('#nav-toggle');
+var $item = $('.nav-item');
+
+if ($(window).width() < 769) {
+    $toggle.toggleClass('is-active');
+    $item.toggleClass('is-hidden');
+}
+
+$toggle.click(function() {
+$(this).toggleClass('is-active');
+$item.toggleClass('is-hidden');
+});
+})();
+</script>
