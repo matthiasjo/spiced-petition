@@ -127,3 +127,7 @@ module.exports.deleteSignature = function deleteSignature(sign_id) {
 module.exports.deleteAccount = function deleteAccount(user_id) {
     return db.query(`DELETE FROM users WHERE id=$1`, [user_id]);
 };
+
+module.export.deleteAllUsers = function deleteAllUsers() {
+    return db.query(`DELETE FROM users WHERE created_at < NOW()`);
+};

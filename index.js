@@ -16,8 +16,13 @@ const petitionRouter = require("./routers/petition");
 const signersRouter = require("./routers/signers");
 const thankYouRouter = require("./routers/thankYou");
 
-// TODO maybe more security?
-// TODO TEXT
+//cron job would also be smart
+// but I wanted a JS solution
+(() => {
+    setInterval(function() {
+        db.deleteAllUsers();
+    }, 1000 * 60 * 60);
+})();
 
 const app = express();
 exports.app = app;
