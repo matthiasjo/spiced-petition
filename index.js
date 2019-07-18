@@ -16,13 +16,22 @@ const petitionRouter = require("./routers/petition");
 const signersRouter = require("./routers/signers");
 const thankYouRouter = require("./routers/thankYou");
 
-//cron job would also be smart
-// but I wanted a JS solution
-(() => {
-    setInterval(function() {
-        db.deleteAllUsers();
-    }, 1000 * 60 * 60);
-})();
+///////////////////////// LOGGING \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+const winston = require("winston");
+///////////////////////// \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+const logger = winston.createLogger({
+    level: "info",
+    format: winston.format.json(),
+    defaultMeta: { service: "user-service" },
+    transports: [
+        // - Write to all logs with level `info` and below to `combined.log`
+        // - Write all logs error (and below) to `error.log`.
+        new winston.transports.Console(),
+        new winston.transports.File({ filename: "error.log", level: "error" }),
+        new winston.transports.File({ filename: "combined.log" })
+    ]
+});
 
 const app = express();
 exports.app = app;
@@ -115,6 +124,6 @@ app.use(serveStatic("./public"));
 
 if (require.main == module) {
     app.listen(process.env.PORT || port, () =>
-        console.log(`This server is listening on port ${port}`)
+        logger.log("info", `This server is listening on port ${port}`)
     );
 }
