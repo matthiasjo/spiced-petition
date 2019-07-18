@@ -41,5 +41,24 @@
                 $("#signatureField").val(canvas.toDataURL());
             }
         });
+        // $("form").submit(function(e) {
+        //     if ($("#signatureField").val() != "") {
+        //         e.preventDefault();
+        //         $.ajax({
+        //             url: "/petition",
+        //             method: "POST",
+        //             data: JSON.stringify({
+        //                 _csrf: $("#csurfval").val(),
+        //                 signature: $("#signatureField").val()
+        //             }),
+        //             dataType: "json",
+        //             contentType: "application/json",
+        //             processData: false,
+        //             success: function() {
+        //                 window.location.replace("/petition/signed");
+        //             }
+        //         });
+        //     }
+        // });
     });
 })();

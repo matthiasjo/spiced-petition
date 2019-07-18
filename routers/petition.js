@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../utils/db");
 const { requireNoSignature } = require("../middleware");
+//const { logger } = require("../index");
 
 module.exports = router;
 

@@ -12,7 +12,7 @@ const profileRouter = require("./routers/profile");
 const editProfileRouter = require("./routers/editProfile");
 const registerRouter = require("./routers/registration");
 const loginRouter = require("./routers/login");
-const petitionRouter = require("./routers/petition");
+
 const signersRouter = require("./routers/signers");
 const thankYouRouter = require("./routers/thankYou");
 
@@ -25,13 +25,15 @@ const logger = winston.createLogger({
     format: winston.format.json(),
     defaultMeta: { service: "user-service" },
     transports: [
-        // - Write to all logs with level `info` and below to `combined.log`
-        // - Write all logs error (and below) to `error.log`.
-        new winston.transports.Console(),
-        new winston.transports.File({ filename: "error.log", level: "error" }),
-        new winston.transports.File({ filename: "combined.log" })
+        new winston.transports.Console()
+        //new winston.transports.File({ filename: "error.log", level: "error" }),
+        //new winston.transports.File({ filename: "combined.log" })
     ]
 });
+
+exports.logger = logger;
+
+const petitionRouter = require("./routers/petition");
 
 const app = express();
 exports.app = app;
@@ -40,8 +42,8 @@ const port = 8080;
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
 
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(
     cookieSession({
@@ -53,6 +55,7 @@ app.use(
 );
 
 app.use(csurf());
+
 app.use(function(req, res, next) {
     res.locals.csrfToken = req.csrfToken();
     res.setHeader(`X-FRAME-OPTIONS`, `DENY`);
