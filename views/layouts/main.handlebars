@@ -39,50 +39,7 @@
   </div>
 </div>
 
-    </body>
+</body>
 </html>
 
-<script type="text/javascript">
-(function(){
-    $(document).ready(function () {
-    var visited = getCookie("visited");
-    if (!visited) {
-        setTimeout(function () {
-            $('.modal').addClass('is-active');
-        }, 500);
-    }
-});
-
-$("#cookieConsent").click(function() {
-    var d = new Date();
-    d.setTime(d.getTime() + (30*24*60*60*1000));
-    var expires = "expires="+ d.toUTCString();
-    document.cookie = "visited" + "=" + true + ";" + expires + ";path=/";
-    $('.modal').removeClass('is-active');
-});
-
-$("#cookieDecline").click(function() {
-   history.go(-1);
-});
-
-$(".modal-close").click(function() {
-    $('.modal').removeClass('is-active');
-});
-
-function getCookie(cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-})();
-</script>
+<script type="text/javascript" src="/script.js"></script>
