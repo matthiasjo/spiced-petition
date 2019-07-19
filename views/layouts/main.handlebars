@@ -16,5 +16,73 @@
         {{{body}}}<!-- three for mains -->
 
 </div>
+<div class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+      <div class="notification is-info">
+    <button class="delete modal-close"></button>
+    Hello, <br>
+    how nice of you to visited
+    Just one notice before you visit this site.
+     <strong>This website is just a mockup.</strong>
+    Please don't fill the forms with real information. But don't worry if you do.
+    The database resets every hour. Please read the <a href="/about">privacy policy</a> if you want to.
+    Users can change, delete or download their user info in the "Edit Profile" section.
+    Cookies are only used to ensure the functionality of this website.
+    You consent to this by clicking the "OK" Button.
+    <hr/>
+        <div class="modalButtons">
+        <button id="cookieDecline" class="button is-warning">Decline</button>
+        <button id="cookieConsent" class="button is-warning">OK</button>
+        <div>
+  </div>
+  </div>
+</div>
+
     </body>
 </html>
+
+<script type="text/javascript">
+(function(){
+    $(document).ready(function () {
+    var visited = getCookie("visited");
+    if (!visited) {
+        setTimeout(function () {
+            $('.modal').addClass('is-active');
+        }, 500);
+    }
+});
+
+$("#cookieConsent").click(function() {
+    var d = new Date();
+    d.setTime(d.getTime() + (30*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = "visited" + "=" + true + ";" + expires + ";path=/";
+    $('.modal').removeClass('is-active');
+});
+
+$("#cookieDecline").click(function() {
+   history.go(-1);
+});
+
+$(".modal-close").click(function() {
+    $('.modal').removeClass('is-active');
+});
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+})();
+</script>

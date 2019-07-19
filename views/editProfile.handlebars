@@ -43,14 +43,25 @@
 
 {{#if signature}}
 <img class="signatureImg" src="{{signature}}" alt="signature">
-<form class="formular" action="/deleteSignature" method="post">
+
+<div class="field is-grouped">
+<form action="/deleteSignature" class="control" method="post">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <button class="button is-warning cButton" type="submit" name="button">Delete Signature</button>
 </form>
 {{/if}}
 
+<div class="control">
+    <button id="download" class="button is-info cButton"  name="button">Download Data</button>
+</div>
 
-<form class="formular" action="/deleteAccount" method="post">
+
+<form class="control" action="/deleteAccount" method="post">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    <button class="button is-warning is-large cButton" type="submit" name="button">DELETE ACCOUNT</button>
+    <button class="button is-danger cButton" type="submit" name="button">DELETE ACCOUNT</button>
 </form>
+
+</div>
+
+<script type="text/javascript" src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
+<script type="text/javascript" src="/editProfile.js"></script>

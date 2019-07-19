@@ -35,6 +35,10 @@
     margin-top: 3vw;
     margin-bottom: 1vw;
 }
+.modalButtons {
+    display: flex;
+    justify-content: space-evenly;
+}
 
 .petitionlist {
     width: 50vw;

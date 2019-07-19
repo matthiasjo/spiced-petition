@@ -88,6 +88,17 @@ module.exports.selectUser = function selectUser(email) {
     );
 };
 
+module.exports.userInfo = function userInfo(id) {
+    return db.query(
+        `SELECT email, city, age, url, name, surname, signatures.signature
+        FROM users
+        LEFT OUTER JOIN signatures ON users.id = signatures.user_id
+        LEFT OUTER JOIN user_profiles ON users.id = user_profiles.user_id
+        WHERE users.id=$1`,
+        [id]
+    );
+};
+
 module.exports.updateUser = function updateUser(
     name,
     surname,

@@ -79,3 +79,8 @@ router
                 .catch(err => console.log(err));
         });
     });
+
+router.route("/userInfo").post(async (req, res) => {
+    userInfo = await db.userInfo(req.session.userID);
+    res.json({ success: true, userInfo: userInfo.rows[0] });
+});
