@@ -111,29 +111,48 @@
             var context = canvas.getContext("2d");
             context.lineWidth = 2;
 
-            $("#canSign").mousedown(function(e) {
+            $("#canSign").on("mousedown touchstart", function(e) {
                 click = true;
                 context.save();
-                xCoord = e.pageX - canvas.offsetLeft;
-                yCoord = e.pageY - canvas.offsetTop;
-            });
-
-            $("#canSign").mousemove(function(e) {
-                if (click == true) {
-                    context.beginPath();
-                    context.moveTo(
-                        e.pageX - canvas.offsetLeft,
-                        e.pageY - canvas.offsetTop
-                    );
-                    context.lineTo(xCoord, yCoord);
-                    context.stroke();
-                    context.closePath();
+                if (event.type == "touchstart") {
+                    console.log("touchstart", canvas.offsetLeft);
+                    xCoord = e.targetTouches[0].pageX - canvas.offsetLeft;
+                    yCoord = e.targetTouches[0].pageY - canvas.offsetTop;
+                } else {
                     xCoord = e.pageX - canvas.offsetLeft;
                     yCoord = e.pageY - canvas.offsetTop;
                 }
             });
 
-            $("#canSign").mouseup(function() {
+            $("#canSign").on("mousemove mouseleave touchmove", function(e) {
+                if (click == true) {
+                    context.beginPath();
+                    if (event.type == "touchmove") {
+                        console.log("canvas offset", canvas.offsetLeft);
+                        context.moveTo(
+                            e.targetTouches[0].pageX - canvas.offsetLeft,
+                            e.targetTouches[0].pageY - canvas.offsetTop
+                        );
+                    } else {
+                        context.moveTo(
+                            e.pageX - canvas.offsetLeft,
+                            e.pageY - canvas.offsetTop
+                        );
+                    }
+                    context.lineTo(xCoord, yCoord);
+                    context.stroke();
+                    context.closePath();
+                    if (event.type == "touchmove") {
+                        xCoord = e.targetTouches[0].pageX - canvas.offsetLeft;
+                        yCoord = e.targetTouches[0].pageY - canvas.offsetTop;
+                    } else {
+                        xCoord = e.pageX - canvas.offsetLeft;
+                        yCoord = e.pageY - canvas.offsetTop;
+                    }
+                }
+            });
+
+            $("#canSign").on("mouseup touchend", function() {
                 click = false;
                 if (!isCanvasBlank(canvas)) {
                     $("#signatureField").val(canvas.toDataURL());

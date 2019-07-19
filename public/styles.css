@@ -135,3 +135,41 @@ canvas {
         transform: translate(0, 0) rotate(0);
     }
 }
+
+@media (max-width: 768px) {
+    .tile.is-child {
+        width: 70vw;
+        background-color: rgba(0, 0, 0, 0.15);
+    }
+    .bgimage {
+        height: 100%;
+        width: 100vw;
+        top: 50%;
+        left: 0;
+        background-size: contain;
+        margin: 0;
+        background-repeat: no-repeat;
+    }
+    .signer {
+        width: 60vw;
+    }
+    .notification.is-info {
+        width: auto;
+    }
+    .formular {
+        width: 60vw;
+    }
+    .editButtonGroup {
+        display: flex;
+        flex-flow: column;
+    }
+    .canvasWrapper {
+        width: 100%;
+    }
+    canvas {
+        width: 100%;
+    }
+    li {
+        font-weight: 500;
+    }
+}

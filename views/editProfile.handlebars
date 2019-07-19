@@ -44,7 +44,7 @@
 {{#if signature}}
 <img class="signatureImg" src="{{signature}}" alt="signature">
 
-<div class="field is-grouped">
+<div class="field is-grouped editButtonGroup">
 <form action="/deleteSignature" class="control" method="post">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <button class="button is-warning cButton" type="submit" name="button">Delete Signature</button>
