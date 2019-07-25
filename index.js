@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const csurf = require("csurf");
 const helmet = require("helmet");
+const basicAuth = require("basic-auth");
 //const { requireNoSignature } = require("./middleware");
 const profileRouter = require("./routers/profile");
 const editProfileRouter = require("./routers/editProfile");
@@ -44,6 +45,24 @@ app.set("view engine", "handlebars");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+///////////////////////////// basic auth \\\\\\\\\\\\\\\\\\\\\\\\\
+const auth = function(req, res, next) {
+    var creds = basicAuth(req);
+    if (!creds || creds.name != "demo" || creds.pass != "demo") {
+        res.setHeader(
+            "WWW-Authenticate",
+            'Basic realm="Please enter the credentials."'
+        );
+        res.sendStatus(401);
+    } else {
+        next();
+    }
+};
+
+app.use(auth);
+
+///////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 app.use(
     cookieSession({

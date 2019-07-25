@@ -62,6 +62,10 @@ canvas {
 .is-hidden {
     display: none;
 }
+.about {
+    width: 60%;
+    left: -10%;
+}
 
 .is-active {
     position: absolute;
