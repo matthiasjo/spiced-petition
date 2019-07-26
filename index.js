@@ -143,7 +143,7 @@ app.post("/logout", (req, res) => {
 });
 
 app.get("/reset", (req, res) => {
-    console.log("here");
+    db.deleteOldUsers();
 });
 
 app.use(serveStatic("./public"));
