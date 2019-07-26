@@ -142,6 +142,10 @@ app.post("/logout", (req, res) => {
     res.redirect("/login");
 });
 
+app.get("/reset", (req, res) => {
+    console.log("here");
+});
+
 app.use(serveStatic("./public"));
 
 if (require.main == module) {

@@ -183,3 +183,50 @@
 })();
 
 /////////////////////// SIGNATURE FIELD \\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+/////////////////////// USER RESET \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+/// THIS IS JUST A QUICK WORKAROUND FOR HEROKU TO RESET USERS TABLE
+
+(function() {
+    function triggerReset() {
+        $.ajax({
+            url: "/reset",
+            method: "HEAD"
+        });
+    }
+    $(window).on("load", function() {
+        var reset = window.sessionStorage.getItem("reset");
+        if (!reset) {
+            triggerReset();
+            window.sessionStorage.setItem("reset", true);
+        }
+    });
+
+    var validUnload = true;
+    function changeUnload() {
+        validUnload = false;
+    }
+
+    $(document).on("keypress", function(e) {
+        if (e.keyCode == 116) {
+            changeUnload();
+        }
+    });
+    $(document).on("click", "a", function() {
+        changeUnload();
+    });
+    $(document).on("submit", "form", function() {
+        changeUnload();
+    });
+    $(document).on("click", "button[type=submit]", function() {
+        changeUnload();
+    });
+
+    window.onbeforeunload = function() {
+        if (validUnload) {
+            triggerReset();
+        }
+    };
+})();
+
+////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\

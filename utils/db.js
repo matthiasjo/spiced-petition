@@ -140,5 +140,7 @@ module.exports.deleteAccount = function deleteAccount(user_id) {
 };
 
 module.exports.deleteAllUsers = function deleteAllUsers() {
-    return db.query(`DELETE FROM users WHERE created_at < NOW()`);
+    return db.query(
+        `DELETE FROM users WHERE created_at < NOW() - interval '1 hour'`
+    );
 };
