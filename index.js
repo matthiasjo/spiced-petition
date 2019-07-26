@@ -144,8 +144,6 @@ app.post("/logout", (req, res) => {
 
 app.use(serveStatic("./public"));
 
-if (require.main == module) {
-    app.listen(process.env.PORT || port, () =>
-        logger.log("info", `This server is listening on port ${port}`)
-    );
-}
+app.listen(port, () =>
+    logger.log("info", `This server is listening on port ${port}`)
+);

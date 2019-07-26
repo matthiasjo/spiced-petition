@@ -8,6 +8,17 @@ This project was also pushed to Heroku.
 
 technologies/packages used: Handlebars, Node, Express, Postgres, Bulma, Heroku
 
+### See this project live
+
+```
+user: demo
+pass: demo
+```
+
+[Heroku Version: https://beetition.herokuapp.com/](https://beetition.herokuapp.com/ "Heroku Beetition")
+
+[Selfhosted Version: https://beetition.heimdal.tech/](https://beetition.heimdal.tech/ "Selfhosted Beetition")
+
 ### Install dependencies
 
 ```
