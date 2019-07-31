@@ -177,3 +177,10 @@ canvas {
         font-weight: 500;
     }
 }
+
+@media (min-width: 2560px) {
+    html {
+        font-size: 2rem;
+        line-height: 1.5rem;
+    }
+}
