@@ -1,0 +1,2 @@
+# Run once every hour
+@hourly node /opt/beeDocker/cronUserDel.js
