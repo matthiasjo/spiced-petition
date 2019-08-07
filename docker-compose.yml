@@ -12,7 +12,7 @@ services:
             POSTGRES_DB: petition
 
     app:
-        build: .
+        image: beetition:latest
         restart: always
         ports:
             - "9010:8080"
