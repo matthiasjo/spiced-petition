@@ -1,5 +1,5 @@
 FROM node:current-alpine
-EXPOSE 3000
+EXPOSE 8080
 
 WORKDIR /opt/beeDocker
 
@@ -16,4 +16,4 @@ CMD ./init.sh
 
 CMD ["supercronic", "/opt/beeDocker/crontab"]
 
-RUN npm run start
+CMD ["node", "/opt/beeDocker/index.js"]
