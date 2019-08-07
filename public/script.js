@@ -53,7 +53,7 @@
         e.preventDefault();
         $.post("/userInfo", function(data) {
             var doc = new jsPDF();
-            var imgData = data.userInfo.signature;
+            var imgData = data.userInfo.signature || "not specified";
             var city = data.userInfo.city || "not specified";
             var age = data.userInfo.age || "not specified";
             var url = data.userInfo.url || "not specified";
