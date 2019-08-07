@@ -6,7 +6,7 @@ services:
         depends_on:
             - postgres
         ports:
-            - "9010:3000"
+            - "9010:8080"
 
     postgres:
         image: postgres:alpine
