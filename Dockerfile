@@ -16,4 +16,4 @@ CMD ./init.sh
 
 CMD ["supercronic", "/opt/beeDocker/crontab"]
 
-npm run start
+RUN npm run start
