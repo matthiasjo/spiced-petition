@@ -1,6 +1,7 @@
 const spicedPg = require("spiced-pg");
 
-const dbUrl = "postgres:postgres:postgres@localhost:5432/petition";
+const dbUrl =
+    process.env.DATABASE_URL || "postgres://postgres:postgres@db:5432/petition";
 const db = spicedPg(dbUrl);
 
 module.exports.addUser = function addUser(

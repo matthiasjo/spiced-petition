@@ -5,6 +5,9 @@ services:
         image: postgres:alpine
         restart: always
         volumes:
+            - ./sql/users.sql:/docker-entrypoint-initdb.d/users.sql
+            - ./sql/profile.sql:/docker-entrypoint-initdb.d/profile.sql
+            - ./sql/signatures.sql:/docker-entrypoint-initdb.d/signatures.sql
             - db:/var/lib/postgresql/data
         environment:
             POSTGRES_USER: postgres
@@ -20,6 +23,10 @@ services:
             - petition:/opt/beeDocker/
         depends_on:
             - db
+        environment:
+            DATABASE_URL: postgres://postgres:postgres@db:5432/petition
+            NODE_ENV: development
+            PORT: 8080
 
 volumes:
     db:

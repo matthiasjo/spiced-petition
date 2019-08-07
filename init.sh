@@ -1,10 +1,5 @@
 #!/bin/sh
 
-LOCAL_DATABASE_URL=postgres://postgres@localhost:5432/petition
-psql "$LOCAL_DATABASE_URL" < "./sql/users.sql"
-psql "$LOCAL_DATABASE_URL" < "./sql/signatures.sql"
-psql "$LOCAL_DATABASE_URL" < "./sql/profiles.sql"
-
 RUN apt-get update && apt-get install -y curl
 
 ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.1.9/supercronic-linux-amd64 \
