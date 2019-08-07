@@ -39,7 +39,7 @@ const petitionRouter = require("./routers/petition");
 const app = express();
 exports.app = app;
 app.use(helmet());
-const port = process.env.PORT || 8080;
+const port = 8080;
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
 
