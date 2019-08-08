@@ -7,13 +7,12 @@ services:
         expose:
             - "5432"
         volumes:
-            - ./sql/users.sql:/docker-entrypoint-initdb.d/users.sql
-            - ./sql/profile.sql:/docker-entrypoint-initdb.d/profile.sql
-            - ./sql/signatures.sql:/docker-entrypoint-initdb.d/signatures.sql
+            - /sql:/var/lib/postgresql/data
             - db:/var/lib/postgresql/data
         environment:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: petition
 
     app:
         image: beetition:latest
@@ -25,7 +24,7 @@ services:
         depends_on:
             - db
         environment:
-            DATABASE_URL: postgres://postgres:postgres@db:5432/postgres
+            DATABASE_URL: postgres://postgres:postgres@db:5432/petition
             NODE_ENV: development
             PORT: 8080
 
