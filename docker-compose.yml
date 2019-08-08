@@ -5,7 +5,7 @@ services:
         image: postgres:alpine
         restart: always
         volumes:
-            - /sql:/var/lib/postgresql/data
+            - ./sql:/var/lib/postgresql/data
             - db:/var/lib/postgresql/data
         environment:
             POSTGRES_USER: postgres
