@@ -4,8 +4,6 @@ services:
     db:
         image: postgres:alpine
         restart: always
-        expose:
-            - "5432"
         volumes:
             - /sql:/var/lib/postgresql/data
             - db:/var/lib/postgresql/data
