@@ -1,11 +1,12 @@
-# docker-compose.yml
+#docker-compose.yml
 version: "3"
 services:
     db:
         image: postgres:alpine
         restart: always
         volumes:
-            - ./sql:/var/lib/postgresql/data
+            - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+            - db:/var/lib/postgresql/data
         environment:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: postgres
