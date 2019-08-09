@@ -1,6 +1,8 @@
 FROM node:current-alpine
 EXPOSE 8080
 
+RUN apt-get update && apt-get install -y cron
+
 WORKDIR /opt/beeDocker
 
 COPY package.json /opt/beeDocker/
