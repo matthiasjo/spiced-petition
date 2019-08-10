@@ -11,7 +11,7 @@ RUN npm ci
 COPY . /opt/beeDocker
 
 RUN touch crontab.txt \
-    && echo '*/5 * * * * node /opt/beeDocker/cronUserDel.js' >> crontab.txt \
+    && echo '@hourly node /opt/beeDocker/cronUserDel.js' >> crontab.txt \
     && chmod 0600 crontab.txt \
     && crontab crontab.txt \
     && rm -rf crontab.txt

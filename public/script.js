@@ -53,7 +53,7 @@
         e.preventDefault();
         $.post("/userInfo", function(data) {
             var doc = new jsPDF();
-            var imgData = data.userInfo.signature || "not specified";
+            var imgData = data.userInfo.signature;
             var city = data.userInfo.city || "not specified";
             var age = data.userInfo.age || "not specified";
             var url = data.userInfo.url || "not specified";
@@ -82,7 +82,11 @@
             doc.setFontSize(25);
             var splitText = doc.splitTextToSize(string, 500);
             doc.text(35, 25, splitText);
-            doc.addImage(imgData, "JPEG", 15, 120);
+            if (!imgData) {
+                doc.text(35, 120, "No signature was given");
+            } else {
+                doc.addImage(imgData, "JPEG", 15, 120);
+            }
             doc.save("userdata.pdf");
         });
         setTimeout(function() {
