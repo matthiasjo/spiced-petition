@@ -15,20 +15,11 @@ user: demo
 pass: demo
 ```
 
-[Heroku Version: https://beetition.herokuapp.com/](https://beetition.herokuapp.com/ "Heroku Beetition")
-
-[Selfhosted Version: https://beetition.heimdal.tech/](https://beetition.heimdal.tech/ "Selfhosted Beetition")
-
-### Install dependencies
+### Build and deploy
 
 ```
-npm install
-```
-
-### Start the node backend server
-
-```
-node index.js
+docker build -t beetition --no-cache . \
+ && docker stack deploy -c docker-compose.yml beetitionStack
 ```
 
 ### Screenshots of the project
