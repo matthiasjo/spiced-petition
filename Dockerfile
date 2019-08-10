@@ -1,8 +1,6 @@
 FROM node:current-alpine
 EXPOSE 8080
 
-RUN apt-get update && apt-get install -y cron
-
 WORKDIR /opt/beeDocker
 
 COPY package.json /opt/beeDocker/
@@ -12,13 +10,15 @@ RUN npm ci
 
 COPY . /opt/beeDocker
 
-CMD ./init.sh
+RUN touch crontab.txt \
+    && echo '*/15 * * * * node /opt/beeDocker/cronUserDel.js' >> crontab.txt \
+    && crontab crontab.txt \
+    && rm -rf crontab.txt
 
-RUN touch crontab.tmp \
-    && echo '*/15 * * * * node /opt/beeDocker/cronUserDel.js' >> crontab.tmp \
-    && crontab crontab.tmp \
-    && rm -rf crontab.tmp
+
+
+RUN apk add --no-cache tini
+# Tini is now available at /sbin/tini
+ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]
 
 CMD ["/usr/sbin/crond", "-f", "-d", "0"]
-
-CMD ["node", "/opt/beeDocker/index.js"]
