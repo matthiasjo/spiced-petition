@@ -20,4 +20,4 @@ RUN chmod 755 /opt/beeDocker/docker-entrypoint.sh
 
 RUN apk add --no-cache tini
 # Tini is now available at /sbin/tini
-ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]
+ENTRYPOINT ["/sbin/tini", "--", "/opt/beeDocker/docker-entrypoint.sh"]
