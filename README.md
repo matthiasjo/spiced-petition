@@ -8,18 +8,18 @@ This project was also pushed to Heroku.
 
 technologies/packages used: Handlebars, Node, Express, Postgres, Bulma, Heroku
 
-### See this project live
-
-```
-user: demo
-pass: demo
-```
-
 ### Build and deploy
 
 ```
 docker build -t beetition --no-cache . \
  && docker stack deploy -c docker-compose.yml beetitionStack
+```
+
+### User info for basic auth
+
+```
+user: demo
+pass: demo
 ```
 
 ### Screenshots of the project
