@@ -19,6 +19,8 @@ pass: demo
 
 [Selfhosted Version: https://beetition.heimdal.tech/](https://beetition.heimdal.tech/ "Selfhosted Beetition")
 
+[Docker Version](https://github.com/matthiasjo/spiced-petition/tree/docker-version "Docker Branch")
+
 ### Install dependencies
 
 ```
