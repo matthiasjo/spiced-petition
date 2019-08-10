@@ -82,7 +82,11 @@
             doc.setFontSize(25);
             var splitText = doc.splitTextToSize(string, 500);
             doc.text(35, 25, splitText);
-            doc.addImage(imgData, "JPEG", 15, 120);
+            if (!imgData) {
+                doc.text(35, 120, "No signature was given");
+            } else {
+                doc.addImage(imgData, "JPEG", 15, 120);
+            }
             doc.save("userdata.pdf");
         });
         setTimeout(function() {
